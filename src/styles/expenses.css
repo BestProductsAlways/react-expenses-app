@@ -1,0 +1,98 @@
+.grid-container--expenses {
+  --grid--col: 1fr 1fr 1fr minmax(0.625rem, 7.5rem);
+  --grid--row: 1fr 1fr;
+}
+
+.grid-container--categories {
+  --grid--col: 1fr 1fr 1fr minmax(0.625rem, 3.5rem);
+  --grid--row: 1fr;
+}
+
+.grid-container--expenses,
+.grid-container--categories {
+  --gap: 0.5rem;
+}
+
+.grid-container--expenses > *,
+#category-description {
+  padding: 0.625rem;
+}
+
+#expense-description,
+#edit-expense-description {
+  grid-column: 1 / 3;
+}
+
+#expense-cost,
+#edit-expense-cost {
+  grid-column: 3 / 4;
+}
+
+#expense-date,
+#edit-expense-date {
+  grid-column: 1 / 2;
+}
+
+#expense-category,
+#edit-expense-category {
+  grid-column: 2 / 4;
+}
+
+#category-description {
+  grid-column: 1 / 4;
+}
+
+.grid-container--expenses .btn--submit {
+  grid-row: 1 / 3;
+}
+
+.grid-container--expenses .btn--submit,
+.grid-container--categories .btn--submit {
+  grid-column: 4 / 5;
+}
+
+.grid-container--expenses-list-item,
+.grid-container--categories-list-item {
+  --grid--row: 1fr;
+  --gap: 0.5rem;
+}
+
+.grid-container--expenses-list-item {
+  --grid--col: minmax(10rem, 20rem) 1fr 1fr minmax(3rem, 7.5rem);
+}
+
+.grid-container--categories-list-item {
+  --grid--col: minmax(10rem, 20rem) 1fr 1fr minmax(3rem, 3.5rem);
+}
+
+.expense-details-list,
+.category-description {
+  grid-column: 1 / 4;
+}
+
+.btn--container {
+  grid-column: 4 / 5;
+}
+
+.expense-description,
+.category-description {
+  justify-self: start;
+}
+
+.btn--submit,
+.btn--edit,
+.btn--delete {
+  aspect-ratio: 1;
+}
+
+.btn--submit:hover {
+  background-color: var(--c--accent-1);
+}
+
+.btn--edit:hover {
+  background-color: var(--c--accent-2);
+}
+
+.btn--delete:hover {
+  background-color: var(--c--accent-3);
+}

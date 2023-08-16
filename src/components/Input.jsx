@@ -1,9 +1,10 @@
 import React from "react";
 
-const ExpensesInput = ({
+const Input = ({
   refHandle,
   idHandle,
   nameHandle,
+  valueHandle,
   typeHandle,
   placeHolderHandle,
   minHandle,
@@ -16,6 +17,7 @@ const ExpensesInput = ({
       ref={refHandle}
       id={idHandle}
       name={nameHandle}
+      defaultValue={valueHandle}
       type={typeHandle}
       placeholder={placeHolderHandle}
       min={minHandle}
@@ -26,4 +28,4 @@ const ExpensesInput = ({
   );
 };
 
-export default ExpensesInput;
+export default Input;

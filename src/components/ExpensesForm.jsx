@@ -1,46 +1,84 @@
 import React from "react";
 import useMainContext from "../hooks/useMainContext";
 import useExpensesContext from "../hooks/useExpensesContext";
-import ExpensesInput from "./ExpensesInput";
+import Input from "./Input";
 import ExpensesSelect from "./ExpensesSelect";
-import ExpensesButton from "./ExpensesButton";
+import Button from "./Button";
 
-const ExpensesForm = () => {
-  const { EXPENSES_URL, expensesFormID, setIsSubmitted, createItem, addItem } =
+const ExpensesForm = ({
+  refHandle: { descriptionInput, costInput, dateInput, categoryInput },
+  idHandle: {
+    formId,
+    descriptionInputId,
+    costInputId,
+    dateInputId,
+    categoryInputId,
+  },
+  valueHandle: {
+    defaultDescription,
+    defaultCost,
+    defaultDate,
+    defaultCategory,
+  },
+}) => {
+  const { EXPENSES_URL, createItem, addItem, updateItem, clearForm } =
     useMainContext();
-  const { descriptionInput, costInput, dateInput, categoryInput } =
-    useExpensesContext();
+
+  const {
+    editableId,
+    editDescriptionInput,
+    editCostInput,
+    editDateInput,
+    editCategoryInput,
+  } = useExpensesContext();
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    addItem(
-      EXPENSES_URL,
-      createItem(
-        "expenses",
-        descriptionInput.current,
-        categoryInput.current,
-        dateInput.current,
-        costInput.current
-      )
-    );
-    setIsSubmitted(true);
+    if (event.target.id.includes("edit")) {
+      updateItem(EXPENSES_URL, editableId.current, {
+        id: editableId.current,
+        [editDescriptionInput.current.name]: editDescriptionInput.current.value,
+        [editCategoryInput.current.name]: editCategoryInput.current.value,
+        [editDateInput.current.name]: editDateInput.current.value,
+        [editCostInput.current.name]: +editCostInput.current.value,
+      });
+    } else {
+      addItem(
+        EXPENSES_URL,
+        createItem(
+          "expenses",
+          descriptionInput.current,
+          categoryInput.current,
+          dateInput.current,
+          costInput.current
+        )
+      );
+    }
+
+    clearForm(descriptionInput.current, costInput.current, dateInput.current);
   };
 
   return (
-    <form id={expensesFormID} onSubmit={handleSubmit}>
-      <ExpensesInput
+    <form
+      id={formId}
+      className="grid grid-container grid-container--expenses grid--all-gap"
+      onSubmit={handleSubmit}
+    >
+      <Input
         refHandle={descriptionInput}
-        idHandle="expense-description"
+        idHandle={descriptionInputId}
         nameHandle="description"
+        valueHandle={defaultDescription}
         typeHandle="text"
-        placeHolderHandle="avadakedavra"
+        placeHolderHandle="expense description"
         required
       />
-      <ExpensesInput
+      <Input
         refHandle={costInput}
-        idHandle="expense-cost"
+        idHandle={costInputId}
         nameHandle="cost"
+        valueHandle={defaultCost}
         typeHandle="number"
         placeHolderHandle="$ 00.00"
         minHandle="0"
@@ -48,20 +86,22 @@ const ExpensesForm = () => {
         stepHandle="0.01"
         required
       />
-      <ExpensesInput
+      <Input
         refHandle={dateInput}
-        idHandle="expense-date"
+        idHandle={dateInputId}
         nameHandle="date"
+        valueHandle={defaultDate}
         typeHandle="date"
         required
       />
       <ExpensesSelect
         refHandle={categoryInput}
-        idHandle="expense-category"
+        idHandle={categoryInputId}
         nameHandle="category"
+        valueHandle={defaultCategory}
         required
       />
-      <ExpensesButton classHandle={"btn--submit"} children="add" />
+      <Button classHandle={"btn--submit"} children="add" />
     </form>
   );
 };

@@ -5,13 +5,10 @@ const MainContext = React.createContext();
 
 const MainContextProvider = ({ children }) => {
   const API_URL = "http://localhost:5000/db";
-  const CATEGORIES_URL = "http://localhost:5000/expenses";
+  const CATEGORIES_URL = "http://localhost:5000/categories";
   const EXPENSES_URL = "http://localhost:5000/expenses";
-  const expensesFormID = "expenses-form";
-  const defaultCategory = "uncategorized";
-  const [dataFromAPI, setDataFromAPI] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const [dataFromAPI, setDataFromAPI] = useState({});
   const { setURL, setOptions, data, isLoading, fetchError } = useFetch(API_URL);
 
   useEffect(() => {
@@ -19,32 +16,6 @@ const MainContextProvider = ({ children }) => {
       return { ...prevDataFromAPI, ...data };
     });
   }, [data]);
-
-  useEffect(() => {
-    isSubmitted && console.log("submitted");
-
-    // isSubmitted &&
-    //   addItem(EXPENSES_URL, {
-    //     id: 24,
-    //     description: "Avadakedavra",
-    //     category: "home",
-    //     date: "2023-08-10",
-    //     cost: 999.99,
-    //   });
-
-    // isSubmitted &&
-    //   updateItem(EXPENSES_URL, 24, {
-    //     id: 24,
-    //     description: "updatedCedavra",
-    //     category: "travel",
-    //     date: "2023-07-10",
-    //     cost: 222.22,
-    //   });
-
-    // isSubmitted && deleteItem(EXPENSES_URL, 24);
-
-    isSubmitted && setIsSubmitted(false);
-  }, [isSubmitted]);
 
   const postRequest = (url, body) => {
     setURL(url);
@@ -72,10 +43,10 @@ const MainContextProvider = ({ children }) => {
   };
 
   const createItem = (field, ...args) => ({
-    id: dataFromAPI[field].slice(-1)[0].id + 1,
+    id: dataFromAPI[field].slice(-1)[0]?.id + 1 || 1,
     ...args.reduce((acc, { name, value }) => {
       if (!acc[name]) {
-        acc[name] = value;
+        acc[name] = name !== "cost" ? value : +value;
       }
       return acc;
     }, {}),
@@ -89,8 +60,10 @@ const MainContextProvider = ({ children }) => {
           expenses: [...prevDataFromAPI["expenses"], body],
         };
       } else if (url === CATEGORIES_URL) {
-        // placeholder for the page with categories
-        // return;
+        return {
+          ...prevDataFromAPI,
+          categories: [...prevDataFromAPI["categories"], body],
+        };
       }
     });
 
@@ -108,7 +81,6 @@ const MainContextProvider = ({ children }) => {
         };
       } else if (url === CATEGORIES_URL) {
         // placeholder for the page with categories
-        // return;
       }
     });
 
@@ -125,27 +97,35 @@ const MainContextProvider = ({ children }) => {
           ),
         };
       } else if (url === CATEGORIES_URL) {
-        // placeholder for the page with categories
-        // return;
+        return {
+          ...prevDataFromAPI,
+          categories: prevDataFromAPI["categories"].filter(
+            (item) => item.id !== id
+          ),
+        };
       }
     });
     deleteRequest(url, id);
   };
 
+  const clearForm = (...args) =>
+    args.forEach((item) => {
+      item.value = "";
+    });
+
   return (
     <MainContext.Provider
       value={{
         EXPENSES_URL,
-        expensesFormID,
-        defaultCategory,
+        CATEGORIES_URL,
         isLoading,
         fetchError,
         dataFromAPI,
-        setIsSubmitted,
         createItem,
         addItem,
         updateItem,
         deleteItem,
+        clearForm,
       }}
     >
       {children}
